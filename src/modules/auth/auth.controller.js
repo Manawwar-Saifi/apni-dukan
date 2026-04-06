@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from './auth.model.js';
 import ApiError from '../../utils/ApiError.js';
 import asyncHandler from '../../utils/asyncHandler.js';
+import { uploadToCloudinary, deleteFromCloudinary } from '../../utils/upload.js';
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -29,6 +30,7 @@ export const signup = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      avatar: user.avatar,
     },
   });
 });
@@ -57,6 +59,7 @@ export const login = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      avatar: user.avatar,
     },
   });
 });
@@ -70,6 +73,36 @@ export const getMe = asyncHandler(async (req, res) => {
       name: req.user.name,
       email: req.user.email,
       role: req.user.role,
+      avatar: req.user.avatar,
+    },
+  });
+});
+
+// PUT /api/auth/profile
+export const updateProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  const { name } = req.body;
+  if (name !== undefined) user.name = name;
+
+  if (req.file) {
+    if (user.avatar?.publicId) {
+      await deleteFromCloudinary(user.avatar.publicId);
+    }
+    const result = await uploadToCloudinary(req.file.buffer, 'avatars');
+    user.avatar = { url: result.secure_url, publicId: result.public_id };
+  }
+
+  await user.save();
+
+  res.json({
+    success: true,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
     },
   });
 });

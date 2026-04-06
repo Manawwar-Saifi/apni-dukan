@@ -1,5 +1,5 @@
 import multer from 'multer';
-import cloudinary from '../config/cloudinary.js';
+import getCloudinary from '../config/cloudinary.js';
 
 const storage = multer.memoryStorage();
 
@@ -16,6 +16,7 @@ export const upload = multer({
 });
 
 export const uploadToCloudinary = (fileBuffer, folder) => {
+  const cloudinary = getCloudinary();
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
@@ -33,5 +34,6 @@ export const uploadToCloudinary = (fileBuffer, folder) => {
 
 export const deleteFromCloudinary = async (publicId) => {
   if (!publicId) return;
+  const cloudinary = getCloudinary();
   await cloudinary.uploader.destroy(publicId);
 };

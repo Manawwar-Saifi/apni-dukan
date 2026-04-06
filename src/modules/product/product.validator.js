@@ -10,6 +10,13 @@ export const createProductValidator = [
     .optional()
     .isIn(['fixed', 'negotiable'])
     .withMessage('Price type must be fixed or negotiable'),
+  body('quantity')
+    .isInt({ min: 0 })
+    .withMessage('Quantity must be a non-negative integer'),
+  body('unit')
+    .optional()
+    .isIn(['pcs', 'kg', 'g', 'l', 'ml', 'pack', 'box', 'dozen'])
+    .withMessage('Invalid unit'),
   body('category').trim().notEmpty().withMessage('Category is required'),
   body('image').optional().trim(),
 ];
@@ -25,6 +32,14 @@ export const updateProductValidator = [
     .optional()
     .isIn(['fixed', 'negotiable'])
     .withMessage('Price type must be fixed or negotiable'),
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Quantity must be a non-negative integer'),
+  body('unit')
+    .optional()
+    .isIn(['pcs', 'kg', 'g', 'l', 'ml', 'pack', 'box', 'dozen'])
+    .withMessage('Invalid unit'),
   body('category').optional().trim().notEmpty().withMessage('Category cannot be empty'),
   body('image').optional().trim(),
 ];
