@@ -11,8 +11,12 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// CORS
-app.use(cors());
+// CORS - allow all origins
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Logging (dev only)
 if (process.env.NODE_ENV !== 'production') {
