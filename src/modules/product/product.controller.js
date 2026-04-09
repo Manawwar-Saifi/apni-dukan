@@ -62,12 +62,14 @@ export const updateProduct = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Product not found');
   }
 
-  const { name, description, price, priceType, category, image } = req.body;
+  const { name, description, price, priceType, quantity, unit, category, image } = req.body;
 
   if (name !== undefined) product.name = name;
   if (description !== undefined) product.description = description;
   if (price !== undefined) product.price = price;
   if (priceType !== undefined) product.priceType = priceType;
+  if (quantity !== undefined) product.quantity = quantity;
+  if (unit !== undefined) product.unit = unit;
   if (category !== undefined) product.category = category;
   if (image !== undefined) product.image = image;
 
